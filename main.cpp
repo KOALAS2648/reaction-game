@@ -35,19 +35,41 @@ float get_avg(vector<float> vec)
 }
 int main()
 {
+	bool show_avg = false;
 	sf::Font font;
-	if (!font.loadFromFile("fonts/birthday.ttf"))
+	if (!font.loadFromFile("fonts/RS.ttf"))
+	{
+		return 1;
+	}
+	sf::Font font1;
+	if (!font1.loadFromFile("fonts/RS.ttf"))
 	{
 		return 1;
 	}
 	sf::Text text;
 	text.setFont(font);
-	text.setString("Hello world");
+	
 	text.setCharacterSize(100);
 	text.setFillColor(sf::Color::Red);
 	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 	text.setOrigin(25, 25);
-	text.setPosition(400, 30);
+	text.setPosition(450, 30);
+
+	sf::Text text1;
+	text1.setFont(font1);
+	text1.setCharacterSize(100);
+	text1.setFillColor(sf::Color::White);
+	text1.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	text1.setOrigin(25, 25);
+	text1.setPosition(50, 30);
+
+	sf::Text text2;
+	text2.setFont(font1);
+	text2.setCharacterSize(100);
+	text2.setFillColor(sf::Color::Green);
+	text2.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	text2.setOrigin(25, 25);
+	text2.setPosition(625, 30);
 	
 	sf::Clock clock;
     int frames = 0;
@@ -59,11 +81,12 @@ int main()
     Player h;
     h.x = window.getSize().x/2;
     h.y = window.getSize().y/2;
+	h.color = sf::Color::Blue;
 	int speed = 10;
 	Player* playerPointer = &h;
 	bool c;
 	bool d;
-	
+	float average;
 	LineCreate l1;
 	l1.x = 200;
 	l1.y = 300;
@@ -82,6 +105,21 @@ int main()
 			{
 				window.close();
 			}
+			if (event.type == sf::Event::KeyPressed)
+    		{
+        		if (event.key.code == sf::Keyboard::Up)
+        		{
+            		speed++;
+        		}
+				if (event.key.code == sf::Keyboard::Down)
+				{
+					speed--;
+				}
+				if (event.key.code == sf::Keyboard::Space)
+				{
+					show_avg = !show_avg;
+				}
+    		}
 		}
 		c = isOutside(playerPointer, windowPointer);
 		d = isTouching(playerPointer, linePointer);
@@ -113,17 +151,29 @@ int main()
 		{
 			h.x+= speed;
 		}
-		
         window.clear();
+		stream.str("");
+		if(show_avg)
+		{
+			stream.str("");
+			average = get_avg(times);
+			stream << std::fixed << std::setprecision(3) << average;
+			string a = stream.str();
+			text2.setString(a);
+			window.draw(text2);
+			
+		}
+		stream.str("");
+		text1.setString("speed: "+to_string(speed));
 		stream << std::fixed << std::setprecision(1) << elapsed;
 		string pres = stream.str();
 		text.setString(pres);
 		window.draw(text);
-		stream.str("");
+		window.draw(text1);
+		
 		stream.clear();
 		l1.draw(windowPointer);
         h.draw(windowPointer);
-		
 		
         window.display();
         
